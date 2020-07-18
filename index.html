@@ -34,7 +34,7 @@
     const float SHAPE_ANIMATION_SPEED = 2.0;
     const float SHAPE_PERIOD_FACTOR = 30.0;
     const float FADE_FACTOR = .99;
-    const float EXPANSION_FACTOR = 1.7;
+    const float EXPANSION_FACTOR = .7;
 
     // Spectral Colour Scheme By Alan Zucconi www.alanzucconi.com
     float saturate(float x) {
@@ -77,8 +77,8 @@
       vec2 expansion = st / iResolution * EXPANSION_FACTOR;
       float angle = atan(st.x, st.y);
       float dist = length(st)
-        + (sin(angle * 5. + iTime * 1.2) + .0) * .1 * sin(iTime * 1.4)
-        + (sin(angle * 9. + iTime * 1.3) + .0) * .13 * sin(iTime * 1.5);
+        + (sin(angle * 5. + iTime * 1.2) + .0) * .05 * sin(iTime * 1.4)
+        + (sin(angle * 9. + iTime * 1.3) + .0) * .03 * sin(iTime * 1.5);
 
       vec3 prevColor = texture2D(iChannel0, uv - expansion).rgb;
       vec3 color = vec3(
@@ -91,7 +91,8 @@
           )
           / 2.
         )
-      ) * SHAPE_FACTOR * spectral_zucconi6(mod(dist - iTime * 1.1, 1.));
+      ) * SHAPE_FACTOR * spectral_zucconi6(mod(dist - iTime * .1, 1.))
+      * step(dist, .9);
       gl_FragColor = vec4(
         prevColor * FADE_FACTOR
         + color
@@ -241,7 +242,7 @@
 </header>
 <nav id="project-miniatures" class="miniatures hidden">
   <a class="miniature"
-     href="#_075-samarth-optical-illusions"
+     href="#_075-samarth_optical_illusions"
      data-flickity-bg-lazyload="stammtisch/075-03.06.2020/samarth_optical-illusions/illusion-miniature.jpg">
     <h2>Animated optical illusions</h2>
   </a>
@@ -250,9 +251,14 @@
      data-flickity-bg-lazyload="stammtisch/075-03.06.2020/kazik-xemantic.com/xemantic.com-miniature.jpg">
     <h2>xemantic.com</h2>
   </a>
+  <a class="miniature"
+     href="#_065-abe-inner_island"
+     data-flickity-bg-lazyload="stammtisch/065-06.09.2019/abe-inner_island/inner-island-miniature.jpg">
+    <h2>Inner Island</h2>
+  </a>
 </nav>
 <section id="projects" class="hidden">
-  <article id="_075-samarth-optical-illusions">
+  <article id="_075-samarth_optical_illusions">
     <div class="media">
       <img class="medium" src="stammtisch/075-03.06.2020/samarth_optical-illusions/illusion1.jpg" loading="lazy" />
       <div class="caption">
@@ -284,6 +290,17 @@
       <h2>xemantic.com</h2>
       <p class="intro">
         Got to <a href="https://xemantic.com">xemantic.com</a> for details.
+      </p>
+    </div>
+  </article>
+  <article id="_065-abe-inner_island">
+    <div class="media">
+      <div class="medium vimeo-video" data-video-id="363489966"></div>
+    </div>
+    <div class="description">
+      <h2>xemantic.com</h2>
+      <p class="intro">
+        Check <a href="https://floatingspectrum.com/">Floating Spectrum</a> for details.
       </p>
     </div>
   </article>
