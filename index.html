@@ -34,12 +34,15 @@
     const float SHAPE_ANIMATION_SPEED = 2.0;
     const float SHAPE_PERIOD_FACTOR = 30.0;
     const float FADE_FACTOR = .99;
+    const float EXPANSION_FACTOR = 20.7;
 
     void main() {
       vec2 uv = gl_FragCoord.xy / iResolution;
       vec2 st = (gl_FragCoord.xy * 2. - iResolution) / iMinDimension;
+      vec2 expansion = st / iResolution * EXPANSION_FACTOR;
       float angle = atan(st.x, st.y);
       float dist = length(st) + (sin(angle * 5. + iTime) + 1.) * .1;
+
       vec3 prevColor = texture2D(iChannel0, uv - st * .001).rgb;
       vec3 color = vec3(
         (
@@ -97,7 +100,6 @@
       justify-content: center;
     }
     header .logo {
-      width: var(--golden-ratio-width-longer);
       opacity: 0;
       filter: drop-shadow(var(--shadow-x) var(--shadow-y) var(--shadow-blur-radius) rgba(0, 0, 0, var(--shadow-opacity)));
       animation: fade-in var(--logo-fade-in-duration) ease-in-out;
@@ -198,7 +200,7 @@
   }
 </script>
 <header>
-  <h1>Creative Code Berlin Stammtisch History</h1>
+  <h1 class="logo">Creative Code Berlin Stammtisch History</h1>
 </header>
 <nav id="project-miniatures" class="miniatures hidden">
   <a class="miniature"

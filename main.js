@@ -8,7 +8,7 @@ const FLICKITY_FULLSCREEN_DIST = "https://unpkg.com/flickity-fullscreen@1/fullsc
 const FLICKITY_FULLSCREEN_CSS_DIST = "https://unpkg.com/flickity-fullscreen@1/fullscreen.css";
 
 const VIMEO_DIST = "https://player.vimeo.com/api/player.js";
-const FONT_DIST = "https://fonts.googleapis.com/css2?family=Arsenal:ital,wght@0,400;0,700;1,400;1,700&display=swap";
+const FONT_DIST = "https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap";
 const FONT_AWESOME_DIST = "https://kit.fontawesome.com/0bbdfd8b39.js";
 
 const imageLoadHandler = (event) => {

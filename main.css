@@ -31,7 +31,7 @@
 html {
   scroll-behavior: smooth;
   font-size: var(--font-size);
-  font-family: "Arsenal", sans-serif;
+  font-family: 'Oswald', sans-serif;
   color: var(--text-color);
 }
 
