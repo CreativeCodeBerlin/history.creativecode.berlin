@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Creative Code Berlin Stammtisch History</title>
+
+  <meta name="description"  content="The list of projects presented on Creative Code Berlin Stammtisch meetups" />
+  <meta name="keywords"     content="creative coding, code, creative, art, programming" />
+  <meta name="author"       content="Kazik Pogoda" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script type="x-shader/x-fragment" id="loopback-shader">
+    precision lowp float; precision lowp int; precision lowp sampler2D; uniform vec2 R;uniform float D,T;
+    uniform sampler2D T0;void main(){lowp vec3 v;highp vec2 f;f=gl_FragCoord.xy/R;
+      highp vec2 m;m=(gl_FragCoord.xy*2.-R)/D;highp vec2 h;h=f-m/R*20.7;lowp vec2 i;i=(texture2D(T0,h).xy-vec2(.3,.3))*vec2(.002,.002);
+      highp vec2 l;l=f-i;v=texture2D(T0,l).xyz*.999;highp float u;u=sqrt(dot(m,m));if(u<.618){highp float e,c;
+        c=clamp((u-.618)/-.016,0.,1.);e=c*(c*(3.-2.*c))*(u/.618);highp float p;p=pow(e,20.);e=p;float o;
+        o=float(mod(T*.1,1.));vec3 y;y=vec3(3.54585,2.93225,2.41594)*(o-vec3(.695491,.492283,.276999));
+        vec3 z;z=vec3(3.90307,3.21183,3.96587)*(o-vec3(.117486,.86755,.660779));
+        v=v+(min(max(vec3(1.,1.,1.)-y*y-vec3(.0231264,.152251,.52608),0.),1.)+
+        min(max(vec3(1.,1.,1.)-z*z-vec3(.848971,.884453,.739495),0.),1.))*p*.03;if(u<.4944){highp float t;
+          t=clamp((u-.4944)/-.016,0.,1.);e=t*(t*(3.-2.*t))*(u/.4944);highp float s;s=pow(e,20.);e=s;float g;
+          g=float(mod(T*.1+.5,1.));vec3 w;w=vec3(3.54585,2.93225,2.41594)*(g-vec3(.695491,.492283,.276999));
+          vec3 a;a=vec3(3.90307,3.21183,3.96587)*(g-vec3(.117486,.86755,.660779));v=v+(min(max(vec3(1.,1.,1.)-
+          w*w-vec3(.0231264,.152251,.52608),0.),1.)+min(max(vec3(1.,1.,1.)-a*a-vec3(.848971,.884453,.739495),0.),1.))*s*.03;}
+        v=clamp(v,0.,1.);}lowp vec4 p;p.w=1.;p.xyz=v;gl_FragColor=p;}
+  </script>
+  <style>
+    :root {
+      --golden-ratio-width-longer: 61.8vw;
+      --golden-ratio-width-shorter: 38.2vw;
+      --golden-ratio-height-longer: 61.8vh;
+      --golden-ratio-height-shorter: 38.2vh;
+
+      --shadow-x: 1.3vw;
+      --shadow-y: 1.3vw;
+      --shadow-blur-radius: .15vw;
+      --shadow-opacity: .8;
+
+      /* initially background is covering everything */
+      --z-index-logo: 4;
+      --z-index-background: 3;
+
+      --logo-fade-in-duration: 9s;
+    }
+    html {
+      box-sizing: border-box;
+      background: black;
+    }
+    body {
+      overflow-y: scroll;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body, h1, h2, h3, h4, h5, h6, p, ol, ul, blockquote {
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      height: var(--golden-ratio-height-longer);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    header .logo {
+      width: var(--golden-ratio-width-longer);
+      opacity: 0;
+      filter: drop-shadow(var(--shadow-x) var(--shadow-y) var(--shadow-blur-radius) rgba(0, 0, 0, var(--shadow-opacity)));
+      animation: fade-in var(--logo-fade-in-duration) ease-in-out;
+      animation-delay: var(--logo-fade-in-delay);
+      animation-fill-mode: forwards; /* will keep the opacity */
+      z-index: var(--z-index-logo);
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    #loopback-background {
+      background: black; /* covers everything */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: var(--z-index-background);
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+  <script>
+    const MAX_SHADOW_DROP = 5.0;
+    const MAX_BLUR_RADIUS = .9;
+
+    // LoopbackCanvas
+    function m(a){var c=0;return function(){return c<a.length?{done:!1,value:a[c++]}:{done:!0}}}function p(a){return Error(a)}p.prototype=Object.create(Error.prototype);
+    function r(a,c,f,e){this.a=a;this.b=a.createTexture();a.bindTexture(a.TEXTURE_2D,this.b);a.texImage2D(a.TEXTURE_2D,0,a.RGBA,c,f,0,a.RGBA,e.HALF_FLOAT_OES,null);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_MIN_FILTER,a.LINEAR);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_MAG_FILTER,a.LINEAR);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_WRAP_S,a.CLAMP_TO_EDGE);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_WRAP_T,a.CLAMP_TO_EDGE);this.c=a.createFramebuffer();a.bindFramebuffer(a.FRAMEBUFFER,this.c);a.framebufferTexture2D(a.FRAMEBUFFER,
+    a.COLOR_ATTACHMENT0,a.TEXTURE_2D,this.b,0)}r.prototype.release=function(){this.a.bindFramebuffer(this.a.FRAMEBUFFER,this.c);this.a.deleteTexture(this.b);this.a.bindFramebuffer(this.a.FRAMEBUFFER,null);this.a.deleteFramebuffer(this.c)};function t(a,c,f){c=a.createShader(c);a.shaderSource(c,f);a.compileShader(c);if(!a.getShaderParameter(c,a.COMPILE_STATUS)){var e=String(a.getShaderInfoLog(c));console.log(e,f);a.deleteShader(c);return e}return c}
+    function u(a,c){var f=t(a,a.VERTEX_SHADER,"\nattribute vec2 V;\n//attribute vec2 aUV;\n//varying vec2 vUV;\n\nvoid main() {\n    gl_Position = vec4(V, 0.0, 1.0);\n    //vUV = aUV;\n}\n");c=t(a,a.FRAGMENT_SHADER,c);var e=a.createProgram();a.attachShader(e,f);a.attachShader(e,c);a.linkProgram(e);return e}function x(a){var c=a.createBuffer();a.bindBuffer(a.ARRAY_BUFFER,c);a.bufferData(a.ARRAY_BUFFER,new Float32Array([-1,1,1,1,-1,-1,1,-1]),a.STATIC_DRAW);return c}
+    function y(a,c,f,e){var d=new r(a,c,f,e);a=new r(a,c,f,e);return[d,a]}
+    window.LoopbackCanvas=function(a,c){function f(){v=performance.now()/1E3;if(d.width!==d.clientWidth||d.height!==d.clientHeight){d.width=d.clientWidth;d.height=d.clientHeight;b.viewport(0,0,b.canvas.width,b.canvas.height);var g=k;var l="undefined"!=typeof Symbol&&Symbol.iterator&&g[Symbol.iterator];g=l?l.call(g):{next:m(g)};for(l=g.next();!l.done;l=g.next())l.value.release();k=y(b,d.width,d.height,q);e()}b.useProgram(h);b.uniform1f(z,v);b.uniform1i(A,w);b.bindFramebuffer(b.FRAMEBUFFER,k[0].c);b.bindTexture(b.TEXTURE_2D,
+    k[1].b);b.drawArrays(b.TRIANGLE_STRIP,0,4);b.useProgram(n);b.bindFramebuffer(b.FRAMEBUFFER,null);b.bindTexture(b.TEXTURE_2D,k[0].b);b.drawArrays(b.TRIANGLE_STRIP,0,4);k.reverse();w++;requestAnimationFrame(f)}function e(){var g=Math.min(d.width,d.height);b.useProgram(h);b.uniform2f(B,d.width,d.height);b.uniform1f(C,g);b.useProgram(n);b.uniform2f(D,d.width,d.height);b.uniform1f(E,g)}var d=document.getElementById(a);a=document.getElementById(c).text.trim();d.width=d.clientWidth;d.height=d.clientHeight;
+    var b=d.getContext("webgl");if(!b)throw new p("webgl context not supported on supplied canvas element: "+d);var q=b.getExtension("OES_texture_half_float");if(!q)throw new p("OES_texture_half_float is required but not supported here");if(!b.getExtension("OES_texture_half_float_linear"))throw new p("OES_texture_half_float_linear is required but not supported here");var k=y(b,d.width,d.height,q),h=u(b,a),n=u(b,"\nprecision mediump float;\n\nuniform vec2 R;\nuniform sampler2D T;\nvarying vec2 vUV;\n\nvoid main() {\n    // vUV is equal to gl_FragCoord/uScreenResolution\n    // do some pixel shader related work\n    gl_FragColor = texture2D(T, gl_FragCoord.xy/R);\n}\n\n");
+    b.useProgram(h);a=b.getAttribLocation(h,"V");c=x(b);b.bindBuffer(b.ARRAY_BUFFER,c);b.vertexAttribPointer(a,2,b.FLOAT,!1,0,0);b.enableVertexAttribArray(a);b.viewport(0,0,b.canvas.width,b.canvas.height);var B=b.getUniformLocation(h,"R"),C=b.getUniformLocation(h,"D"),z=b.getUniformLocation(h,"T"),A=b.getUniformLocation(h,"F");b.useProgram(n);var D=b.getUniformLocation(n,"R"),E=b.getUniformLocation(n,"D");e();var w=0,v=0;f()};window.WebglLoopbackException=p;
+
+    // will load main.js, but also will be used there to load other scripts
+    function addScript(src, callback, errorCallback, crossorigin) {
+      const script = document.createElement("script");
+      if (callback) {
+        script.onload = callback;
+      }
+      if (errorCallback) {
+        script.onerror = errorCallback;
+      }
+      if (crossorigin) {
+        script.setAttribute("crossorigin", crossorigin);
+      }
+      script.setAttribute("src", src);
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    const root = document.documentElement;
+
+    function handleMove(event) {
+      const x = (event.clientX - .5 * innerWidth) / innerWidth;
+      const y = (event.clientY - .5 * innerHeight) / innerWidth;
+      const distance = Math.sqrt((x * x) + (y * y));
+      root.style.setProperty("--shadow-x", (x * -MAX_SHADOW_DROP) + "vw");
+      root.style.setProperty("--shadow-y", (y * -MAX_SHADOW_DROP) + "vw");
+      root.style.setProperty("--shadow-blur-radius", ((distance * MAX_BLUR_RADIUS) + "vw"));
+    }
+    document.addEventListener("mousemove", handleMove, false);
+    document.addEventListener("touchmove", handleMove, false);
+
+    // now we have to fix chrome native image lazy loading which is still trying to download some
+    // images before the page emits load event
+    const supportsLazyLoad = ("loading" in document.createElement("img"));
+    const lazyLoadingProcessor = (supportsLazyLoad && window.MutationObserver) ? new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeName == "IMG" && node.loading && (node.loading == "lazy")) {
+            node.setAttribute("data-src", node.src);
+            node.src = "";
+          }
+        });
+      });
+    }) : null;
+
+    window.addEventListener("load", e => {
+      if (lazyLoadingProcessor) {
+        lazyLoadingProcessor.disconnect();
+      }
+      new LoopbackCanvas("loopback-background", "loopback-shader");
+      addScript("main.js");
+    }, false);
+  </script>
+</head>
+<body>
+<script>
+  // installing the processor as early as possible, after the body is created
+  if (lazyLoadingProcessor) {
+    lazyLoadingProcessor.observe(document.body, {childList: true, subtree: true});
+  }
+</script>
+<header>
+  <h1>Creative Code Berlin Stammtisch History</h1>
+</header>
+<nav id="project-miniatures" class="miniatures hidden">
+  <a class="miniature"
+     href="#xemantic"
+     data-flickity-bg-lazyload="projects/xemantic.com/xemantic.com-miniature.jpg">
+    <h2>xemantic.com</h2>
+  </a>
+</nav>
+<section id="projects" class="hidden">
+  <article id="xemantic">
+    <div class="media">
+      <iframe class="iframe" data-src="index.html" loading="lazy"></iframe>
+      <div class="caption">
+        Enjoy this recursive fractal. I <i class="fas fa-heart"></i> going meta. :)
+      </div>
+    </div>
+    <div class="description">
+      <h2>xemantic.com</h2>
+      <p class="intro">
+        Got to <a href="https://xemantic.com">xemantic.com</a> for details.
+      </p>
+    </div>
+  </article>
+</section>
+<section id="me" class="hidden">
+  <div class="row">
+    <div class="media">
+      <img src="images/Negentropy-Kazik_Pogoda-Generative-2020.jpg" alt="Negentropy, Generative, Kazik Pogoda, 2020" loading="lazy"/>
+    </div>
+    <div class="description">
+      <p>
+        See <a href="https://creativecode.berlin">Creative Code Berlin</a>
+      </p>
+    </div>
+  </div>
+</section>
+<footer class="hidden">
+  <div>
+    <p>
+      <a href="https://creativecode.berlin">Creative Code Berlin</a><br/>
+      Website engine made with &hearts; by <a href="https://xemantic.com">xemantic.com</a>
+    </p>
+  </div>
+</footer>
+<canvas id="loopback-background"></canvas>
+</body>
+</html>
