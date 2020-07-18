@@ -32,15 +32,15 @@
 
     const float SHAPE_FACTOR = .01;
     const float SHAPE_ANIMATION_SPEED = 2.0;
-    const float SHAPE_PERIOD_FACTOR = 100.0;
+    const float SHAPE_PERIOD_FACTOR = 30.0;
     const float FADE_FACTOR = .99;
 
     void main() {
       vec2 uv = gl_FragCoord.xy / iResolution;
       vec2 st = (gl_FragCoord.xy * 2. - iResolution) / iMinDimension;
       float angle = atan(st.x, st.y);
-      float dist = length(st);
-      vec3 prevColor = texture2D(iChannel0, uv).rgb;
+      float dist = length(st) + (sin(angle * 5. + iTime) + 1.) * .1;
+      vec3 prevColor = texture2D(iChannel0, uv - st * .001).rgb;
       vec3 color = vec3(
         (
           (
@@ -51,7 +51,7 @@
           )
           / 2.
         )
-      ) * SHAPE_FACTOR;
+      ) * SHAPE_FACTOR * step(dist, .618);
       gl_FragColor = vec4(
         prevColor * FADE_FACTOR
         + color
