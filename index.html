@@ -30,20 +30,57 @@
     uniform int F;
     uniform sampler2D T0;
 
-    const float SHAPE_FACTOR = .01;
+    const float SHAPE_FACTOR = .015;
     const float SHAPE_ANIMATION_SPEED = 2.0;
     const float SHAPE_PERIOD_FACTOR = 30.0;
     const float FADE_FACTOR = .99;
-    const float EXPANSION_FACTOR = 20.7;
+    const float EXPANSION_FACTOR = 1.7;
+
+    // Spectral Colour Scheme By Alan Zucconi www.alanzucconi.com
+    float saturate(float x) {
+      return min(1.0, max(0.0,x));
+    }
+    vec3 saturate (vec3 x) {
+      return min(vec3(1.,1.,1.), max(vec3(0.,0.,0.),x));
+    }
+    vec3 bump3y(vec3 x, vec3 yoffset) {
+      vec3 y = vec3(1.,1.,1.) - x * x;
+      y = saturate(y-yoffset);
+      return y;
+    }
+    vec3 spectral_zucconi6(float x) {
+
+      const vec3 c1 = vec3(3.54585104, 2.93225262, 2.41593945);
+      const vec3 x1 = vec3(0.69549072, 0.49228336, 0.27699880);
+      const vec3 y1 = vec3(0.02312639, 0.15225084, 0.52607955);
+
+      const vec3 c2 = vec3(3.90307140, 3.21182957, 3.96587128);
+      const vec3 x2 = vec3(0.11748627, 0.86755042, 0.66077860);
+      const vec3 y2 = vec3(0.84897130, 0.88445281, 0.73949448);
+
+      return
+      bump3y(c1 * (x - x1), y1) +
+      bump3y(c2 * (x - x2), y2);
+    }
+    vec3 zucconiPow(float x) {
+      vec3 z = spectral_zucconi6(x);
+      return vec3(
+      pow(z.r, 2.2),
+      pow(z.g, 2.2),
+      pow(z.b, 2.2)
+      );
+    }
 
     void main() {
       vec2 uv = gl_FragCoord.xy / iResolution;
       vec2 st = (gl_FragCoord.xy * 2. - iResolution) / iMinDimension;
       vec2 expansion = st / iResolution * EXPANSION_FACTOR;
       float angle = atan(st.x, st.y);
-      float dist = length(st) + (sin(angle * 5. + iTime) + 1.) * .1;
+      float dist = length(st)
+        + (sin(angle * 5. + iTime * 1.2) + .0) * .1 * sin(iTime * 1.4)
+        + (sin(angle * 9. + iTime * 1.3) + .0) * .13 * sin(iTime * 1.5);
 
-      vec3 prevColor = texture2D(iChannel0, uv - st * .001).rgb;
+      vec3 prevColor = texture2D(iChannel0, uv - expansion).rgb;
       vec3 color = vec3(
         (
           (
@@ -54,7 +91,7 @@
           )
           / 2.
         )
-      ) * SHAPE_FACTOR * step(dist, .618);
+      ) * SHAPE_FACTOR * spectral_zucconi6(mod(dist - iTime * 1.1, 1.));
       gl_FragColor = vec4(
         prevColor * FADE_FACTOR
         + color
