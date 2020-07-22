@@ -99,21 +99,46 @@
   </script>
   <style>
     :root {
+      /* changeable variables: start */
+      --font-family: "Arsenal", sans-serif;
+      --text-color: white;
+      --logo-fade-in-duration: 9s;
+      --font-size-base: 15px;
+      --font-size-increment: 1vw;
+      --content-padding-base: .5vw;
+      --content-padding-increment: 1vw;
+      --selection-color: rgb(220, 34, 240, .4);
+      --paragraph-spacing: .618rem;
+      --content-background-strong: rgba(0, 0, 0, .618);
+      --miniature-title-height: calc(var(--golden-ratio-height-shorter) * .236);
+      --miniature-title-padding: calc(var(--golden-ratio-height-shorter) * 0.0618);
+      --miniature-title-font-size: calc(var(--golden-ratio-height-shorter) * .13);
+      --h2-margin-bottom: .5rem;
+      /* changeable variables: end */
+
+      /* variables changeable at your own risk: start */
+      --medium-width: var(--golden-ratio-width-longer);
+      --medium-height: calc(var(--golden-ratio-width-longer) * .618);
+
+      --font-size: calc(var(--font-size-base) + var(--font-size-increment));
+      --content-padding: calc(var(--content-padding-base) + var(--content-padding-increment));
+      /* variables changeable at your own risk: end */
+
       --golden-ratio-width-longer: 61.8vw;
       --golden-ratio-width-shorter: 38.2vw;
       --golden-ratio-height-longer: 61.8vh;
       --golden-ratio-height-shorter: 38.2vh;
 
+      /* shadow: start - initial shadow values - later on supplied from mouse or touch events */
       --shadow-x: 1.3vw;
       --shadow-y: 1.3vw;
       --shadow-blur-radius: .15vw;
       --shadow-opacity: .8;
+      /* shadow: end */
 
       /* initially background is covering everything */
       --z-index-logo: 4;
       --z-index-background: 3;
-
-      --logo-fade-in-duration: 9s;
     }
     html {
       box-sizing: border-box;
@@ -136,6 +161,7 @@
       justify-content: center;
     }
     header .logo {
+      width: var(--golden-ratio-width-longer);
       opacity: 0;
       filter: drop-shadow(var(--shadow-x) var(--shadow-y) var(--shadow-blur-radius) rgba(0, 0, 0, var(--shadow-opacity)));
       animation: fade-in var(--logo-fade-in-duration) ease-in-out;
@@ -161,10 +187,17 @@
     }
   </style>
   <script>
+    // adjustable settings: begin
+    const MAIN_JS = "https://xemantic.com/main.js";
+    const MAIN_CSS = "https://xemantic.com/main.css";
+    //const CUSTOM_JS = "custom.js";
+    const FONT_DIST = "https://fonts.googleapis.com/css2?family=Arsenal:ital,wght@0,400;0,700;1,400;1,700&display=swap";
+    const FONT_AWESOME_DIST = "https://kit.fontawesome.com/0bbdfd8b39.js";
     const MAX_SHADOW_DROP = 5.0;
     const MAX_BLUR_RADIUS = .9;
+    // adjustable settings: end
 
-    // LoopbackCanvas
+    // LoopbackCanvas: start
     function m(a){var c=0;return function(){return c<a.length?{done:!1,value:a[c++]}:{done:!0}}}function p(a){return Error(a)}p.prototype=Object.create(Error.prototype);
     function r(a,c,f,e){this.a=a;this.b=a.createTexture();a.bindTexture(a.TEXTURE_2D,this.b);a.texImage2D(a.TEXTURE_2D,0,a.RGBA,c,f,0,a.RGBA,e.HALF_FLOAT_OES,null);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_MIN_FILTER,a.LINEAR);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_MAG_FILTER,a.LINEAR);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_WRAP_S,a.CLAMP_TO_EDGE);a.texParameteri(a.TEXTURE_2D,a.TEXTURE_WRAP_T,a.CLAMP_TO_EDGE);this.c=a.createFramebuffer();a.bindFramebuffer(a.FRAMEBUFFER,this.c);a.framebufferTexture2D(a.FRAMEBUFFER,
     a.COLOR_ATTACHMENT0,a.TEXTURE_2D,this.b,0)}r.prototype.release=function(){this.a.bindFramebuffer(this.a.FRAMEBUFFER,this.c);this.a.deleteTexture(this.b);this.a.bindFramebuffer(this.a.FRAMEBUFFER,null);this.a.deleteFramebuffer(this.c)};function t(a,c,f){c=a.createShader(c);a.shaderSource(c,f);a.compileShader(c);if(!a.getShaderParameter(c,a.COMPILE_STATUS)){var e=String(a.getShaderInfoLog(c));console.log(e,f);a.deleteShader(c);return e}return c}
@@ -174,6 +207,7 @@
     k[1].b);b.drawArrays(b.TRIANGLE_STRIP,0,4);b.useProgram(n);b.bindFramebuffer(b.FRAMEBUFFER,null);b.bindTexture(b.TEXTURE_2D,k[0].b);b.drawArrays(b.TRIANGLE_STRIP,0,4);k.reverse();w++;requestAnimationFrame(f)}function e(){var g=Math.min(d.width,d.height);b.useProgram(h);b.uniform2f(B,d.width,d.height);b.uniform1f(C,g);b.useProgram(n);b.uniform2f(D,d.width,d.height);b.uniform1f(E,g)}var d=document.getElementById(a);a=document.getElementById(c).text.trim();d.width=d.clientWidth;d.height=d.clientHeight;
     var b=d.getContext("webgl");if(!b)throw new p("webgl context not supported on supplied canvas element: "+d);var q=b.getExtension("OES_texture_half_float");if(!q)throw new p("OES_texture_half_float is required but not supported here");if(!b.getExtension("OES_texture_half_float_linear"))throw new p("OES_texture_half_float_linear is required but not supported here");var k=y(b,d.width,d.height,q),h=u(b,a),n=u(b,"\nprecision mediump float;\n\nuniform vec2 R;\nuniform sampler2D T;\nvarying vec2 vUV;\n\nvoid main() {\n    // vUV is equal to gl_FragCoord/uScreenResolution\n    // do some pixel shader related work\n    gl_FragColor = texture2D(T, gl_FragCoord.xy/R);\n}\n\n");
     b.useProgram(h);a=b.getAttribLocation(h,"V");c=x(b);b.bindBuffer(b.ARRAY_BUFFER,c);b.vertexAttribPointer(a,2,b.FLOAT,!1,0,0);b.enableVertexAttribArray(a);b.viewport(0,0,b.canvas.width,b.canvas.height);var B=b.getUniformLocation(h,"R"),C=b.getUniformLocation(h,"D"),z=b.getUniformLocation(h,"T"),A=b.getUniformLocation(h,"F");b.useProgram(n);var D=b.getUniformLocation(n,"R"),E=b.getUniformLocation(n,"D");e();var w=0,v=0;f()};window.WebglLoopbackException=p;
+    // LoopbackCanvas: end
 
     // will load main.js, but also will be used there to load other scripts
     function addScript(src, callback, errorCallback, crossorigin) {
@@ -224,7 +258,7 @@
         lazyLoadingProcessor.disconnect();
       }
       new LoopbackCanvas("loopback-background", "loopback-shader");
-      addScript("main.js");
+      addScript(MAIN_JS);
     }, false);
   </script>
 </head>
@@ -239,6 +273,18 @@
   <h1 class="logo">Creative Code Berlin Stammtisch History</h1>
 </header>
 <nav id="project-miniatures" class="miniatures hidden">
+  <!--
+  Add your recent project here, copy this as a first entry below:
+
+  <a class="miniature"
+     href="#_stammtisch_no-your_name-project_name"
+     data-flickity-bg-lazyload="stammtisch/stammtisch_no-date/your_name-name_of_your_project/project_name-miniature.png">
+    <h2>Project Name</h2>
+  </a>
+
+  Note: the _ (underscore) in href is important as anchors cannot start with numbers.
+  Jump down to the projects section.
+  -->
   <a class="miniature"
      href="#_075-victor-phonkapp"
      data-flickity-bg-lazyload="stammtisch/075-03.06.2020/victor-phonkapp/phonk.png">
